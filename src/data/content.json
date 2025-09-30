@@ -1,0 +1,26 @@
+{
+  "nav": [
+    {
+      "name": "Home",
+      "href": "/"
+    },
+    {
+      "name": "About",
+      "href": "/about"
+    },
+    {
+      "name": "Contact",
+      "href": "/contact"
+    }
+  ],
+  "footer": [
+    {
+      "name": "Home",
+      "href": "/"
+    }
+  ],
+  "home": {
+    "title": "Home",
+    "description": "Home"
+  }
+}
