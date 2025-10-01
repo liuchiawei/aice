@@ -7,19 +7,21 @@ import {
   useMotionValue,
   useTransform,
 } from "motion/react";
+import Image from "next/image";
+import Link from "next/link";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import Image from "next/image";
-import Link from "next/link";
+import TeamMemberCard from "./TeamMemberCard";
 import { Loader } from "lucide-react";
 import TeamMembers from "@/data/team-members.json";
 
 export default function Hero() {
   const [mounted, setMounted] = useState(false);
+  const [selectedTeamMember, setSelectedTeamMember] = useState<number | null>(null);
   // ウィンドウサイズを取得
   const windowSize = useWindowSize();
 
@@ -65,7 +67,7 @@ export default function Hero() {
   }
 
   return (
-    <div className="w-full h-screen relative cursor-grab active:cursor-grabbing overflow-hidden user-select-none touch-none">
+    <div className="w-full h-screen relative overflow-hidden user-select-none touch-none">
       <motion.div
         drag
         // 拖曳邊界設定
@@ -80,9 +82,9 @@ export default function Hero() {
           height: device.height * 2,
           x,
           y,
-          background: "transparent",
           willChange: "transform",
         }}
+        className="bg-transparent cursor-grab active:cursor-grabbing"
       >
         {grid.map((rows, rowIndex) =>
           rows.map((colIndex: number) => (
@@ -97,10 +99,12 @@ export default function Hero() {
               yRange={yRange}
               scaleRange={scaleRange}
               translateRange={translateRange}
+              setSelectedTeamMember={setSelectedTeamMember}
             />
           ))
         )}
       </motion.div>
+      {selectedTeamMember && <TeamMemberCard id={selectedTeamMember} setSelectedTeamMember={setSelectedTeamMember} />}
     </div>
   );
 }
@@ -115,6 +119,7 @@ function Item({
   yRange,
   scaleRange,
   translateRange,
+  setSelectedTeamMember,
 }: ItemProps) {
   const xOffset =
     col * (icon.size + icon.margin) +
@@ -149,11 +154,13 @@ function Item({
       <TooltipProvider>
         <Tooltip delayDuration={600}>
           <TooltipTrigger asChild>
-            <Link
-              href={`/team/${
-                TeamMembers[(row * 10 + col) % TeamMembers.length].id
-              }`}
-              className="w-full h-full flex justify-center items-center"
+            <div
+              onClick={() =>
+                setSelectedTeamMember(
+                  TeamMembers[(row * 10 + col) % TeamMembers.length].id
+                )
+              }
+              className="w-full h-full flex justify-center items-center cursor-pointer"
             >
               {/* Demo Image */}
               <img
@@ -169,7 +176,7 @@ function Item({
                 height={icon.size}
                 className="object-cover select-none touch-none"
               /> */}
-            </Link>
+            </div>
           </TooltipTrigger>
           <TooltipContent>
             <p>{TeamMembers[(row * 12 + col) % TeamMembers.length].name}</p>
@@ -193,6 +200,7 @@ interface ItemProps {
   yRange: number[];
   scaleRange: number[];
   translateRange: number[];
+  setSelectedTeamMember: (id: number) => void;
 }
 
 /**
