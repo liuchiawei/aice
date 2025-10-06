@@ -1,58 +1,162 @@
 [
   {
     "id": 1,
-    "name": "Andrew Akimoto",
-    "image": "https://i.pravatar.cc/120?img=8",
+    "name": {
+      "first": "Andrew",
+      "last": "Akimoto",
+      "furikana": "アンドリュー・アキモト",
+      "nickname": "Andrew"
+    },
+    "image": {
+      "thumbnail": "https://i.pravatar.cc/120?img=8",
+      "full": "https://i.pravatar.cc/360?img=8"
+    },
     "role": "CEO",
-    "description": "John is the CEO of the company"
+    "part-time-job": "",
+    "description": "John is the CEO of the company",
+    "age": 30,
+    "join-reason": "To make the world a better place",
+    "goal": "To make the world a better place",
+    "message": "We are the best"
   },
   {
     "id": 2,
-    "name": "Bill Bryant",
-    "image": "https://i.pravatar.cc/120?img=7",
+    "name": {
+      "first": "Bill",
+      "last": "Bryant",
+      "furikana": "ビル・ブライアント",
+      "nickname": "Bill"
+    },
+    "image": {
+      "thumbnail": "https://i.pravatar.cc/120?img=7",
+      "full": "https://i.pravatar.cc/360?img=7"
+    },
     "role": "CTO",
-    "description": "Jane is the CTO of the company"
+    "part-time-job": "",
+    "description": "Jane is the CTO of the company",
+    "age": 30,
+    "join-reason": "To make the world a better place",
+    "goal": "To make the world a better place",
+    "message": "We are the best"
   },
   {
     "id": 3,
-    "name": "Chris Klein",
-    "image": "https://i.pravatar.cc/120?img=11",
+    "name": {
+      "first": "Chris",
+      "last": "Klein",
+      "furikana": "クリス・クライン",
+      "nickname": "Chris"
+    },
+    "image": {
+      "thumbnail": "https://i.pravatar.cc/120?img=11",
+      "full": "https://i.pravatar.cc/360?img=11"
+    },
     "role": "CFO",
-    "description": "Jim is the CFO of the company"
+    "part-time-job": "Software Engineer",
+    "description": "Jim is the CFO of the company",
+    "age": 30,
+    "join-reason": "To make the world a better place",
+    "goal": "To make the world a better place",
+    "message": "We are the best"
   },
   {
     "id": 4,
-    "name": "David Doe",
-    "image": "https://i.pravatar.cc/120?img=13",
+    "name": {
+      "first": "David",
+      "last": "Doe",
+      "furikana": "デヴィッド・ドー",
+      "nickname": "David"
+    },
+    "image": {
+      "thumbnail": "https://i.pravatar.cc/120?img=13",
+      "full": "https://i.pravatar.cc/360?img=13"
+    },
     "role": "COO",
-    "description": "Jill is the COO of the company"
+    "part-time-job": "",
+    "description": "Jill is the COO of the company",
+    "age": 30,
+    "join-reason": "To make the world a better place",
+    "goal": "To make the world a better place",
+    "message": "We are the best"
   },
   {
     "id": 5,
-    "name": "Eric Eijima",
-    "image": "https://i.pravatar.cc/120?img=9",
+    "name": {
+      "first": "Eric",
+      "last": "Eijima",
+      "furikana": "エリック・エイジマ",
+      "nickname": "Eric"
+    },
+    "image": {
+      "thumbnail": "https://i.pravatar.cc/120?img=9",
+      "full": "https://i.pravatar.cc/360?img=9"
+    },
     "role": "CMO",
-    "description": "Jack is the CMO of the company"
+    "part-time-job": "",
+    "description": "Jack is the CMO of the company",
+    "age": 30,
+    "join-reason": "To make the world a better place",
+    "goal": "To make the world a better place",
+    "message": "We are the best"
   },
   {
     "id": 6,
-    "name": "Frank Fu",
-    "image": "https://i.pravatar.cc/120?img=18",
+    "name": {
+      "first": "Frank",
+      "last": "Fu",
+      "furikana": "フランク・フー",
+      "nickname": "Frank"
+    },
+    "image": {
+      "thumbnail": "https://i.pravatar.cc/120?img=18",
+      "full": "https://i.pravatar.cc/360?img=18"
+    },
     "role": "CFO",
-    "description": "Jill is the CFO of the company"
+    "part-time-job": "",
+    "description": "Jill is the CFO of the company",
+    "age": 30,
+    "join-reason": "To make the world a better place",
+    "goal": "To make the world a better place",
+    "message": "We are the best"
   },
   {
     "id": 7,
-    "name": "George Goto",
-    "image": "https://i.pravatar.cc/120?img=33",
+    "name": {
+      "first": "George",
+      "last": "Goto",
+      "furikana": "ジョージ・ゴート",
+      "nickname": "George"
+    },
+    "image": {
+      "thumbnail": "https://i.pravatar.cc/120?img=33",
+      "full": "https://i.pravatar.cc/360?img=33"
+    },
     "role": "CMO",
-    "description": "Jim is the CMO of the company"
+    "part-time-job": "",
+    "description": "Jim is the CMO of the company",
+    "age": 30,
+    "join-reason": "To make the world a better place",
+    "goal": "To make the world a better place",
+    "message": "We are the best"
   },
   {
     "id": 8,
-    "name": "Hidemi Hamada",
-    "image": "https://i.pravatar.cc/150?img=59",
+    "name": {
+      "first": "Hidemi",
+      "last": "Hamada",
+      "furikana": "ヒデミ・ハマダ",
+      "nickname": "Hidemi"
+    },
+    "image": {
+      "thumbnail": "https://i.pravatar.cc/120?img=59",
+      "full": "https://i.pravatar.cc/360?img=59"
+    },
     "role": "CMO",
-    "description": "Jim is the CMO of the company"
+    "part-time-job": "",
+    "description": "Jim is the CMO of the company",
+    "age": 30,
+    "join-reason": "To make the world a better place",
+    "goal": "To make the world a better place",
+    "message": "We are the best"
   }
 ]

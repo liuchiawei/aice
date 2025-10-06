@@ -6,6 +6,7 @@ import {
   MotionValue,
   useMotionValue,
   useTransform,
+  AnimatePresence,
 } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,7 +22,9 @@ import TeamMembers from "@/data/team-members.json";
 
 export default function Hero() {
   const [mounted, setMounted] = useState(false);
-  const [selectedTeamMember, setSelectedTeamMember] = useState<number | null>(null);
+  const [selectedTeamMember, setSelectedTeamMember] = useState<number | null>(
+    null
+  );
   // ウィンドウサイズを取得
   const windowSize = useWindowSize();
 
@@ -104,7 +107,14 @@ export default function Hero() {
           ))
         )}
       </motion.div>
-      {selectedTeamMember && <TeamMemberCard id={selectedTeamMember} setSelectedTeamMember={setSelectedTeamMember} />}
+      <AnimatePresence>
+        {selectedTeamMember && (
+          <TeamMemberCard
+            id={selectedTeamMember}
+            setSelectedTeamMember={setSelectedTeamMember}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -164,8 +174,8 @@ function Item({
             >
               {/* Demo Image */}
               <img
-                src={TeamMembers[(row * 10 + col) % TeamMembers.length].image}
-                alt={TeamMembers[(row * 10 + col) % TeamMembers.length].name}
+                src={TeamMembers[(row * 10 + col) % TeamMembers.length].image.thumbnail}
+                alt={TeamMembers[(row * 10 + col) % TeamMembers.length].name.furikana}
                 className="object-cover select-none touch-none"
               />
               {/* Product Image */}
@@ -179,7 +189,7 @@ function Item({
             </div>
           </TooltipTrigger>
           <TooltipContent>
-            <p>{TeamMembers[(row * 12 + col) % TeamMembers.length].name}</p>
+            <p>{TeamMembers[(row * 12 + col) % TeamMembers.length].name.furikana}</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
