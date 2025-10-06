@@ -85,12 +85,14 @@ export default function TeamMemberCard({
               >
                 <CardItem
                   translateZ={40}
-                  as="img"
-                  src={teamMember.image.full}
-                  alt={teamMember.name}
-                  children={null}
-                  className="aspect-square rounded-full object-cover overflow-hidden group-hover:shadow-xl transition-all duration-200 ease-linear"
-                />
+                  className="aspect-square rounded-full overflow-hidden group-hover:shadow-xl transition-all duration-200 ease-linear w-full h-full"
+                >
+                  <img
+                    src={teamMember.image.full}
+                    alt={teamMember.name.furikana}
+                    className="w-full h-full object-cover"
+                  />
+                </CardItem>
               </motion.div>
               {/* Info Section */}
               <CardItem
