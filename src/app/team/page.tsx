@@ -1,9 +1,20 @@
-import Hero from "./components/hero"
+import { PrismaClient } from "@/generated/prisma";
+import Hero from "./components/hero";
 
-export default function Team() {
+const prisma = new PrismaClient();
+
+export default async function Team() {
+  const teamMembers = await prisma.teamMember.findMany({
+    orderBy: {
+      id: 'asc'
+    }
+  });
+
+  await prisma.$disconnect();
+
   return (
     <div>
-      <Hero />
+      <Hero teamMembers={teamMembers} />
     </div>
-  )
+  );
 }

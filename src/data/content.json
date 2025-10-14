@@ -5,6 +5,14 @@
       "href": "/"
     },
     {
+      "name": "Team",
+      "href": "/team"
+    },
+    {
+      "name": "Register",
+      "href": "/register"
+    },
+    {
       "name": "About",
       "href": "/about"
     },
