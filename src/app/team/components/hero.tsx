@@ -57,7 +57,7 @@ export default function Hero({ teamMembers }: { teamMembers: TeamMember[] }) {
   // 根據螢幕寬度動態計算列數 (3 ~ 10)
   const gridColCount = Math.min(
     10,
-    Math.max(3, Math.floor(windowSize.width / (icon.size + icon.margin)))
+    Math.max(3, Math.floor(windowSize.width * 1.2 / (icon.size + icon.margin)))
   );
 
   // 動態生成網格
@@ -101,7 +101,7 @@ export default function Hero({ teamMembers }: { teamMembers: TeamMember[] }) {
         drag
         // 拖曳邊界設定
         dragConstraints={{
-          left: -device.width / 4, // maximum left (right side drag)
+          left: -device.width / 5, // maximum left (right side drag)
           right: 100, // maximum right (left side drag)
           top: -500,
           bottom: 50,
