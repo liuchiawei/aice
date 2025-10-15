@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import type { PutBlobResult } from "@vercel/blob";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +9,8 @@ import { Loader } from "lucide-react";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const inputFileRef = useRef<HTMLInputElement>(null);
+  const [blob, setBlob] = useState<PutBlobResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
@@ -15,7 +18,6 @@ export default function RegisterPage() {
     lastName: "",
     furigana: "",
     nickname: "",
-    image: "",
     role: "",
     partTimeJob: "",
     description: "",
@@ -25,12 +27,30 @@ export default function RegisterPage() {
     message: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file size (4MB limit)
+    if (file.size > 4 * 1024 * 1024) {
+      setError("Avatar file size must be less than 4MB");
+      if (inputFileRef.current) {
+        inputFileRef.current.value = "";
+      }
+      return;
+    }
+
+    setError("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,18 +59,32 @@ export default function RegisterPage() {
     setError("");
 
     try {
+      const formDataToSend = new FormData();
+
+      // Append all text fields
+      Object.entries(formData).forEach(([key, value]) => {
+        formDataToSend.append(key, value);
+      });
+
+      // Append avatar file if selected
+      if (inputFileRef.current?.files?.[0]) {
+        formDataToSend.append("avatar", inputFileRef.current.files[0]);
+      }
+
       const response = await fetch("/api/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+        body: formDataToSend,
       });
 
       const data = await response.json();
 
       if (!response.ok) {
         throw new Error(data.error || "Registration failed");
+      }
+
+      // Set blob result
+      if (data.data.image) {
+        setBlob({ url: data.data.image } as PutBlobResult);
       }
 
       // Success - redirect to team page
@@ -65,7 +99,9 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-2xl bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">Register New Team Member</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">
+          Register New Team Member
+        </h1>
 
         {error && (
           <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md text-red-600">
@@ -73,122 +109,149 @@ export default function RegisterPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
-                First Name *
-              </label>
-              <Input
-                id="firstName"
-                name="firstName"
-                type="text"
-                required
-                value={formData.firstName}
-                onChange={handleChange}
-                placeholder="e.g., John"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
-                Last Name *
-              </label>
-              <Input
-                id="lastName"
-                name="lastName"
-                type="text"
-                required
-                value={formData.lastName}
-                onChange={handleChange}
-                placeholder="e.g., Doe"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="furigana" className="block text-sm font-medium text-gray-700 mb-1">
-                Furigana (Japanese) *
-              </label>
-              <Input
-                id="furigana"
-                name="furigana"
-                type="text"
-                required
-                value={formData.furigana}
-                onChange={handleChange}
-                placeholder="e.g., ジョン・ドー"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="nickname" className="block text-sm font-medium text-gray-700 mb-1">
-                Nickname *
-              </label>
-              <Input
-                id="nickname"
-                name="nickname"
-                type="text"
-                required
-                value={formData.nickname}
-                onChange={handleChange}
-                placeholder="e.g., Johnny"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-1">
-              Image URL *
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-2 gap-2 md:gap-4 data-grid:flex data-grid:flex-col data-grid:gap-1"
+        >
+          <div data-grid>
+            <label
+              htmlFor="firstName"
+              className="text-sm font-medium text-gray-700"
+            >
+              First Name *
             </label>
             <Input
-              id="image"
-              name="image"
-              type="url"
+              id="firstName"
+              name="firstName"
+              type="text"
               required
-              value={formData.image}
+              value={formData.firstName}
               onChange={handleChange}
-              placeholder="https://example.com/photo.jpg"
+              placeholder="e.g., John"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
-                Role *
-              </label>
-              <Input
-                id="role"
-                name="role"
-                type="text"
-                required
-                value={formData.role}
-                onChange={handleChange}
-                placeholder="e.g., CEO, CTO"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="age" className="block text-sm font-medium text-gray-700 mb-1">
-                Age *
-              </label>
-              <Input
-                id="age"
-                name="age"
-                type="number"
-                required
-                min="18"
-                max="100"
-                value={formData.age}
-                onChange={handleChange}
-                placeholder="e.g., 30"
-              />
-            </div>
+          <div data-grid>
+            <label
+              htmlFor="lastName"
+              className="text-sm font-medium text-gray-700"
+            >
+              Last Name *
+            </label>
+            <Input
+              id="lastName"
+              name="lastName"
+              type="text"
+              required
+              value={formData.lastName}
+              onChange={handleChange}
+              placeholder="e.g., Doe"
+            />
+          </div>
+          <div data-grid>
+            <label
+              htmlFor="furigana"
+              className="text-sm font-medium text-gray-700"
+            >
+              Furigana (Japanese) *
+            </label>
+            <Input
+              id="furigana"
+              name="furigana"
+              type="text"
+              required
+              value={formData.furigana}
+              onChange={handleChange}
+              placeholder="e.g., ジョン・ドー"
+            />
           </div>
 
-          <div>
-            <label htmlFor="partTimeJob" className="block text-sm font-medium text-gray-700 mb-1">
+          <div data-grid>
+            <label
+              htmlFor="nickname"
+              className="text-sm font-medium text-gray-700"
+            >
+              Nickname *
+            </label>
+            <Input
+              id="nickname"
+              name="nickname"
+              type="text"
+              required
+              value={formData.nickname}
+              onChange={handleChange}
+              placeholder="e.g., Johnny"
+            />
+          </div>
+
+          <div data-grid className="col-span-2">
+            <label
+              htmlFor="avatar"
+              className="text-sm font-medium text-gray-700"
+            >
+              Avatar Photo (Optional, max 4MB)
+            </label>
+            <Input
+              id="avatar"
+              name="avatar"
+              type="file"
+              ref={inputFileRef}
+              accept="image/*"
+              onChange={handleFileChange}
+              className="cursor-pointer"
+            />
+            {blob && (
+              <div>
+                <p className="text-sm text-green-600">
+                  Avatar uploaded successfully!
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div data-grid>
+            <label
+              htmlFor="role"
+              className="text-sm font-medium text-gray-700"
+            >
+              Role *
+            </label>
+            <Input
+              id="role"
+              name="role"
+              type="text"
+              required
+              value={formData.role}
+              onChange={handleChange}
+              placeholder="e.g., CEO, CTO"
+            />
+          </div>
+
+          <div data-grid>
+            <label
+              htmlFor="age"
+              className="text-sm font-medium text-gray-700"
+            >
+              Age *
+            </label>
+            <Input
+              id="age"
+              name="age"
+              type="number"
+              required
+              min="18"
+              max="100"
+              value={formData.age}
+              onChange={handleChange}
+              placeholder="e.g., 30"
+            />
+          </div>
+
+          <div data-grid className="col-span-2">
+            <label
+              htmlFor="partTimeJob"
+              className="text-sm font-medium text-gray-700"
+            >
               Part-time Job (Optional)
             </label>
             <Input
@@ -201,8 +264,11 @@ export default function RegisterPage() {
             />
           </div>
 
-          <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+          <div data-grid className="col-span-2">
+            <label
+              htmlFor="description"
+              className="text-sm font-medium text-gray-700"
+            >
               Description *
             </label>
             <textarea
@@ -217,8 +283,11 @@ export default function RegisterPage() {
             />
           </div>
 
-          <div>
-            <label htmlFor="joinReason" className="block text-sm font-medium text-gray-700 mb-1">
+          <div data-grid className="col-span-2">
+            <label
+              htmlFor="joinReason"
+              className="text-sm font-medium text-gray-700"
+            >
               Join Reason *
             </label>
             <textarea
@@ -233,8 +302,11 @@ export default function RegisterPage() {
             />
           </div>
 
-          <div>
-            <label htmlFor="goal" className="block text-sm font-medium text-gray-700 mb-1">
+          <div data-grid className="col-span-2">
+            <label
+              htmlFor="goal"
+              className="text-sm font-medium text-gray-700"
+            >
               Goal *
             </label>
             <textarea
@@ -249,8 +321,11 @@ export default function RegisterPage() {
             />
           </div>
 
-          <div>
-            <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+          <div data-grid className="col-span-2">
+            <label
+              htmlFor="message"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Message *
             </label>
             <textarea
@@ -265,12 +340,8 @@ export default function RegisterPage() {
             />
           </div>
 
-          <div className="flex gap-4 pt-4">
-            <Button
-              type="submit"
-              disabled={loading}
-              className="flex-1"
-            >
+          <div className="col-span-2 flex gap-4 pt-4">
+            <Button type="submit" disabled={loading} className="flex-1">
               {loading ? (
                 <>
                   <Loader className="size-4 animate-spin" />

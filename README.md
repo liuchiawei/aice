@@ -1,46 +1,182 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# チームメンバー紹介ページ
 
-## Project Overview
+Apple Watch OS にインスパイアされたインタラクティブなドラッグ可能グリッドインターフェースを特徴とするメンバー紹介ページです。
 
-This is a member introduction page inspired by Apple Watch OS.
+## 技術スタック
 
-### Tech Stack
+- **フレームワーク**: Next.js 15 (App Router)、React 19
+- **UI**: Tailwind CSS 4、shadcn/ui コンポーネント
+- **アニメーション**: Motion/React (Framer Motion)
+- **データベース**: PostgreSQL (Prisma ORM)
+- **ストレージ**: Vercel Blob (画像保存)
+- **パッケージマネージャー**: pnpm (ワークスペース構成)
 
-- **Framework**: Next.js 15, React 19
-- **UI**: Tailwind CSS 4, shadcn
-- **Animation**: Motion/React
+## セットアップ
 
-## Getting Started
-
-First, run the development server:
+### 1. 依存関係のインストール
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. 環境変数の設定
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+`.env` ファイルを作成し、以下の変数を設定してください：
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+DATABASE_URL="your-postgresql-connection-string"
+BLOB_READ_WRITE_TOKEN="your-vercel-blob-token"
+```
 
-## Learn More
+### 3. データベースのセットアップ
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+# Prisma Client を生成
+pnpm dlx prisma generate
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# マイグレーションを実行
+pnpm dlx prisma migrate dev
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# データベースにシードデータを投入（オプション）
+pnpm dlx prisma db seed
+```
 
-## Deploy on Vercel
+### 4. 開発サーバーの起動
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+pnpm dev
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 主な機能
+
+### 1. インタラクティブグリッドシステム
+
+- Motion/React を使用したドラッグ可能なハニカムスタイルグリッド
+- 画面幅に基づく レスポンシブグリッドカラム（3〜10列）
+- スケール・トランスレート効果を使った Transform ベースのアニメーション
+- アイコンをクリックしてメンバー詳細カードを開く
+- 新しいメンバーを追加するためのプラスボタン
+
+### 2. メンバー登録システム
+
+- アバター写真アップロード機能付き登録フォーム
+- ファイルサイズ制限：4MB 以下
+- Vercel Blob ストレージとの統合
+- 多言語対応（姓、名、ふりがな、ニックネーム）
+
+### 3. データベース統合
+
+- PostgreSQL (Neon) を使用したサーバーレスデータベース
+- Prisma ORM によるタイプセーフなデータアクセス
+- サーバーコンポーネントでのリアルタイムデータフェッチ
+
+## よく使うコマンド
+
+```bash
+# 開発
+pnpm dev                         # Turbopack で開発サーバーを起動
+
+# ビルド & デプロイ
+pnpm build                       # Turbopack でプロダクションビルド
+pnpm start                       # プロダクションサーバーを起動
+
+# コード品質
+pnpm lint                        # ESLint を実行
+
+# データベース (Prisma)
+pnpm dlx prisma generate         # src/generated/prisma に Prisma Client を生成
+pnpm dlx prisma migrate dev      # マイグレーションを作成・適用
+pnpm dlx prisma studio           # Prisma Studio GUI を開く
+pnpm dlx prisma db push          # マイグレーションなしでスキーマ変更をプッシュ
+```
+
+## プロジェクト構成
+
+```
+src/
+├── app/
+│   ├── team/
+│   │   ├── components/
+│   │   │   ├── hero.tsx              # インタラクティブグリッド
+│   │   │   └── TeamMemberCard.tsx    # メンバーカード
+│   │   ├── [id]/                     # メンバー詳細ページ
+│   │   └── page.tsx                  # チーム一覧ページ
+│   ├── register/
+│   │   └── page.tsx                  # 登録フォーム
+│   └── api/
+│       └── register/
+│           └── route.ts              # 登録 API
+├── components/
+│   ├── ui/                           # shadcn/ui コンポーネント
+│   └── layout/                       # レイアウトコンポーネント
+├── data/
+│   └── team-members.json             # シード用データ
+└── generated/
+    └── prisma/                       # 生成された Prisma Client
+
+prisma/
+├── schema.prisma                     # データベーススキーマ
+└── seed.ts                           # シードスクリプト
+```
+
+## API エンドポイント
+
+### POST `/api/register`
+
+チームメンバーの登録とアバターアップロード
+
+**リクエスト形式**: `FormData`
+
+**フィールド**:
+- `firstName`, `lastName`, `furigana`, `nickname` (必須)
+- `role`, `description`, `age`, `joinReason`, `goal`, `message` (必須)
+- `partTimeJob` (任意)
+- `avatar` (任意、画像ファイル、4MB以下)
+
+**レスポンス**:
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "firstName": "太郎",
+    "lastName": "山田",
+    "image": "https://blob.vercel-storage.com/...",
+    ...
+  }
+}
+```
+
+## データベーススキーマ
+
+```prisma
+model TeamMember {
+  id          Int      @id @default(autoincrement())
+  firstName   String
+  lastName    String
+  furigana    String
+  nickname    String
+  image       String
+  role        String
+  partTimeJob String
+  description String
+  age         Int
+  joinReason  String
+  goal        String
+  message     String
+}
+```
+
+## デプロイ
+
+このアプリを Vercel にデプロイするのが最も簡単です：
+
+1. GitHub リポジトリを Vercel に接続
+2. 環境変数を設定（`DATABASE_URL`, `BLOB_READ_WRITE_TOKEN`）
+3. デプロイ
+
+詳細は [Next.js デプロイメントドキュメント](https://nextjs.org/docs/app/building-your-application/deploying)をご覧ください。
+
+## ライセンス
+
+MIT
