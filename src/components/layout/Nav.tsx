@@ -22,7 +22,7 @@ export function Nav() {
           <MenuIcon className="size-4" />
         </Button>
       </SheetTrigger>
-      <SheetContent className="w-60">
+      <SheetContent className="w-60 bg-background/70 backdrop-blur-xs">
         <SheetHeader>
           <SheetTitle>AICE2025</SheetTitle>
         </SheetHeader>
