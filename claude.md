@@ -47,7 +47,7 @@ pnpm dlx prisma db push          # Push schema changes without migrations
 
 - **Data Management**:
   - Database-driven with PostgreSQL via Prisma ORM
-  - Prisma schema at `prisma/schema.prisma`
+  - Prisma schema at `prisma/schema.prisma` with default client output (`node_modules/.prisma/client`)
   - Team member data includes multilingual support (firstName, lastName, furigana, nickname)
   - Database seeding from `src/data/team-members.json` via `prisma/seed.ts`
 
@@ -70,6 +70,7 @@ pnpm dlx prisma db push          # Push schema changes without migrations
    - Drag constraints: left: -200, right: 600, top: -500, bottom: 50 with dragElastic: 0.5
 
 2. **Database Configuration**:
+   - Prisma client uses default output location (`node_modules/.prisma/client`)
    - Uses Neon PostgreSQL (serverless)
    - Connection pooling configured via `DATABASE_URL` in `.env`
    - Schema fields: id, firstName, lastName, furigana, nickname, image, role, partTimeJob, description, age, joinReason, goal, message
