@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import Link from "next/link";
 import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type TeamMember = {
   id: number;
@@ -100,11 +101,16 @@ export default function TeamMemberCard({
                   translateZ={40}
                   className="aspect-square rounded-full overflow-hidden group-hover:shadow-xl transition-all duration-200 ease-linear w-full h-full"
                 >
-                  <img
-                    src={teamMember.image}
-                    alt={teamMember.furigana}
-                    className="w-full h-full object-cover"
-                  />
+                  <Avatar className="size-full">
+                    <AvatarImage
+                      src={teamMember.image}
+                      alt={teamMember.furigana}
+                      className="w-full h-full object-cover"
+                    />
+                    <AvatarFallback className="text-5xl">
+                      {teamMember.firstName.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
                 </CardItem>
               </motion.div>
               {/* Info Section */}
