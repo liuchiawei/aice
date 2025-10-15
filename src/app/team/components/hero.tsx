@@ -8,7 +8,7 @@ import {
   useTransform,
   AnimatePresence,
 } from "motion/react";
-// import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Tooltip,
   TooltipContent,
@@ -57,7 +57,10 @@ export default function Hero({ teamMembers }: { teamMembers: TeamMember[] }) {
   // 根據螢幕寬度動態計算列數 (3 ~ 10)
   const gridColCount = Math.min(
     10,
-    Math.max(3, Math.floor(windowSize.width * 1.2 / (icon.size + icon.margin)))
+    Math.max(
+      3,
+      Math.floor((windowSize.width * 1.2) / (icon.size + icon.margin))
+    )
   );
 
   // 動態生成網格
@@ -208,16 +211,17 @@ function Item({
       <TooltipProvider>
         <Tooltip delayDuration={600}>
           <TooltipTrigger asChild>
-            <div
+            <Avatar
+              className="size-full flex justify-center items-center cursor-pointer"
               onClick={() => setSelectedTeamMember(member.id)}
-              className="w-full h-full flex justify-center items-center cursor-pointer"
             >
-              <img
+              <AvatarImage
                 src={member.image}
                 alt={member.furigana}
-                className="object-cover select-none touch-none w-full h-full"
+                className="object-cover select-none touch-none"
               />
-            </div>
+              <AvatarFallback>{member.furigana.charAt(0)}</AvatarFallback>
+            </Avatar>
           </TooltipTrigger>
           <TooltipContent>
             <p>{member.furigana}</p>
