@@ -212,7 +212,7 @@ function Item({
         <Tooltip delayDuration={600}>
           <TooltipTrigger asChild>
             <Avatar
-              className="size-full flex justify-center items-center cursor-pointer"
+              className="size-full flex justify-center items-center cursor-pointer text-2xl"
               onClick={() => setSelectedTeamMember(member.id)}
             >
               <AvatarImage
@@ -220,7 +220,7 @@ function Item({
                 alt={member.furigana}
                 className="object-cover select-none touch-none"
               />
-              <AvatarFallback>{member.furigana.charAt(0)}</AvatarFallback>
+              <AvatarFallback>{member.firstName.charAt(0)}</AvatarFallback>
             </Avatar>
           </TooltipTrigger>
           <TooltipContent>
