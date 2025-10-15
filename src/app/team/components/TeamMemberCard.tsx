@@ -1,26 +1,39 @@
 "use client";
 
 import { motion } from "motion/react";
+import Link from "next/link";
 import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import TeamMembers from "@/data/team-members.json";
+
+type TeamMember = {
+  id: number;
+  firstName: string;
+  lastName: string;
+  furigana: string;
+  nickname: string;
+  image: string;
+  role: string;
+  partTimeJob: string;
+  description: string;
+  age: number;
+  joinReason: string;
+  goal: string;
+  message: string;
+};
 
 export default function TeamMemberCard({
-  id,
+  teamMember,
   setSelectedTeamMember,
 }: {
-  id: number;
+  teamMember: TeamMember;
   setSelectedTeamMember: (id: number | null) => void;
 }) {
-  const teamMember = TeamMembers.find((member) => member.id === id);
-  if (!teamMember) {
-    return null;
-  }
   // カードの入場と退出の時間
   const cardEnterDuration = 0.5;
   const cardExitDuration = 0.2;
 
   return (
+    // 黒い背景
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -61,10 +74,10 @@ export default function TeamMemberCard({
                 className="w-full text-center absolute top-12 left-1/2 -translate-x-1/2"
               >
                 <h2 className="mb-1 text-md md:text-sm text-muted-foreground">
-                  {teamMember.name.furikana}
+                  {teamMember.furigana}
                 </h2>
                 <h1 className="text-5xl md:text-4xl font-bold group-hover:text-shadow-lg transition-all">
-                  {teamMember.name.first} {teamMember.name.last}
+                  {teamMember.firstName} {teamMember.lastName}
                 </h1>
               </CardItem>
               <motion.div
@@ -88,8 +101,8 @@ export default function TeamMemberCard({
                   className="aspect-square rounded-full overflow-hidden group-hover:shadow-xl transition-all duration-200 ease-linear w-full h-full"
                 >
                   <img
-                    src={teamMember.image.full}
-                    alt={teamMember.name.furikana}
+                    src={teamMember.image}
+                    alt={teamMember.furigana}
                     className="w-full h-full object-cover"
                   />
                 </CardItem>
@@ -100,26 +113,31 @@ export default function TeamMemberCard({
                 className="w-3/4 h-1/5 px-6 py-4 rounded-lg bg-neutral-200/50 backdrop-blur-xs absolute top-2/3 left-1/2 -translate-x-1/2 text-justify group-hover:shadow-xl transition-all"
               >
                 <CardItem
-                  translateZ={120}
+                  translateZ={140}
                   translateY={-10}
-                  className="absolute top-0 left-6 -translate-y-1/2 z-10 px-4 py-1 bg-card-foreground rounded-sm text-card text-xl font-bold group-hover:shadow-xl transition-all"
+                  className="absolute top-0 left-6 -translate-y-1/2 z-10 px-4 py-1 bg-card-foreground rounded-full text-card text-xl font-bold group-hover:shadow-xl transition-all"
                   as="h2"
                 >
                   {teamMember.role}
                 </CardItem>
-                <CardItem
-                  translateZ={80}
-                  className="w-full text-right text-xs"
-                  as="h3"
-                >
+                <h3 className="w-full text-right text-xs">
                   {teamMember.age} 才
-                </CardItem>
-                <CardItem
-                  translateZ={100}
-                  className="text-justify group-hover:text-shadow-md transition-all"
-                  as="p"
-                >
+                </h3>
+                <p className="text-justify group-hover:text-shadow-md transition-all">
                   {teamMember.message}
+                </p>
+                <CardItem
+                  translateY={10}
+                  translateZ={120}
+                  className="absolute bottom-2 right-2"
+                >
+                  <Link
+                    href={`/team/${teamMember.id}`}
+                    target="_blank"
+                    className="px-4 py-2 rounded-full bg-card-foreground text-card text-xs group-hover:shadow-md transition-all"
+                  >
+                    See More
+                  </Link>
                 </CardItem>
               </CardItem>
             </CardBody>

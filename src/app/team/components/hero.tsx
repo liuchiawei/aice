@@ -8,7 +8,7 @@ import {
   useTransform,
   AnimatePresence,
 } from "motion/react";
-// import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Tooltip,
   TooltipContent,
@@ -16,10 +16,26 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import TeamMemberCard from "./TeamMemberCard";
-import { Loader } from "lucide-react";
-import TeamMembers from "@/data/team-members.json";
+import { Loader, Plus } from "lucide-react";
+import Link from "next/link";
 
-export default function Hero() {
+type TeamMember = {
+  id: number;
+  firstName: string;
+  lastName: string;
+  furigana: string;
+  nickname: string;
+  image: string;
+  role: string;
+  partTimeJob: string;
+  description: string;
+  age: number;
+  joinReason: string;
+  goal: string;
+  message: string;
+};
+
+export default function Hero({ teamMembers }: { teamMembers: TeamMember[] }) {
   const [mounted, setMounted] = useState(false);
   const [selectedTeamMember, setSelectedTeamMember] = useState<number | null>(
     null
@@ -37,6 +53,20 @@ export default function Hero() {
     width: windowSize.width,
     height: windowSize.height,
   };
+
+  // 根據螢幕寬度動態計算列數 (3 ~ 10)
+  const gridColCount = Math.min(
+    10,
+    Math.max(
+      3,
+      Math.floor((windowSize.width * 1.2) / (icon.size + icon.margin))
+    )
+  );
+
+  // 動態生成網格
+  const grid = new Array(gridRowCount).fill(
+    Array.from({ length: gridColCount }, (_, i) => i)
+  );
 
   // 初期位置
   const x = useMotionValue(-200);
@@ -74,11 +104,12 @@ export default function Hero() {
         drag
         // 拖曳邊界設定
         dragConstraints={{
-          left: -200,
-          right: 20,
+          left: -device.width / 5, // maximum left (right side drag)
+          right: 100, // maximum right (left side drag)
           top: -500,
           bottom: 50,
         }}
+        dragElastic={0.5}
         style={{
           width: device.width * 2,
           height: device.height * 2,
@@ -94,7 +125,7 @@ export default function Hero() {
               key={`${rowIndex}-${colIndex}`}
               row={rowIndex}
               col={colIndex}
-              index={rowIndex * 12 + colIndex}
+              index={rowIndex * gridColCount + colIndex}
               planeX={x}
               planeY={y}
               xRange={xRange}
@@ -102,14 +133,26 @@ export default function Hero() {
               scaleRange={scaleRange}
               translateRange={translateRange}
               setSelectedTeamMember={setSelectedTeamMember}
+              teamMembers={teamMembers}
+              gridColCount={gridColCount}
             />
           ))
         )}
+        <AddMemberButton
+          planeX={x}
+          planeY={y}
+          xRange={xRange}
+          yRange={yRange}
+          scaleRange={scaleRange}
+          translateRange={translateRange}
+          teamMembersCount={teamMembers.length}
+          gridColCount={gridColCount}
+        />
       </motion.div>
       <AnimatePresence>
         {selectedTeamMember && (
           <TeamMemberCard
-            id={selectedTeamMember}
+            teamMember={teamMembers.find((m) => m.id === selectedTeamMember)!}
             setSelectedTeamMember={setSelectedTeamMember}
           />
         )}
@@ -129,6 +172,8 @@ function Item({
   scaleRange,
   translateRange,
   setSelectedTeamMember,
+  teamMembers,
+  gridColCount,
 }: ItemProps) {
   const xOffset =
     col * (icon.size + icon.margin) +
@@ -142,6 +187,9 @@ function Item({
   const xScale = useTransform(screenOffsetX, xRange, scaleRange);
   const yScale = useTransform(screenOffsetY, yRange, scaleRange);
   const scale = useTransform(() => Math.min(xScale.get(), yScale.get()));
+
+  const memberIndex = (row * gridColCount + col) % teamMembers.length;
+  const member = teamMembers[memberIndex];
 
   return (
     <motion.div
@@ -163,32 +211,20 @@ function Item({
       <TooltipProvider>
         <Tooltip delayDuration={600}>
           <TooltipTrigger asChild>
-            <div
-              onClick={() =>
-                setSelectedTeamMember(
-                  TeamMembers[(row * 10 + col) % TeamMembers.length].id
-                )
-              }
-              className="w-full h-full flex justify-center items-center cursor-pointer"
+            <Avatar
+              className="size-full flex justify-center items-center cursor-pointer"
+              onClick={() => setSelectedTeamMember(member.id)}
             >
-              {/* Demo Image */}
-              <img
-                src={TeamMembers[(row * 10 + col) % TeamMembers.length].image.thumbnail}
-                alt={TeamMembers[(row * 10 + col) % TeamMembers.length].name.furikana}
+              <AvatarImage
+                src={member.image}
+                alt={member.furigana}
                 className="object-cover select-none touch-none"
               />
-              {/* Product Image */}
-              {/* <Image
-                src={TeamMembers[(row * 10 + col) % TeamMembers.length].image}
-                alt={TeamMembers[(row * 10 + col) % TeamMembers.length].name}
-                width={icon.size}
-                height={icon.size}
-                className="object-cover select-none touch-none"
-              /> */}
-            </div>
+              <AvatarFallback>{member.furigana.charAt(0)}</AvatarFallback>
+            </Avatar>
           </TooltipTrigger>
           <TooltipContent>
-            <p>{TeamMembers[(row * 12 + col) % TeamMembers.length].name.furikana}</p>
+            <p>{member.furigana}</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -196,8 +232,79 @@ function Item({
   );
 }
 
-// Fill a grid of numbers to represent each app icon
-const grid = new Array(10).fill([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+function AddMemberButton({
+  planeX,
+  planeY,
+  xRange,
+  yRange,
+  scaleRange,
+  translateRange,
+  teamMembersCount,
+  gridColCount,
+}: {
+  planeX: MotionValue<number>;
+  planeY: MotionValue<number>;
+  xRange: number[];
+  yRange: number[];
+  scaleRange: number[];
+  translateRange: number[];
+  teamMembersCount: number;
+  gridColCount: number;
+}) {
+  // Calculate position based on team members count
+  // Place it after the last member in the grid
+  const totalItems = teamMembersCount;
+  const row = Math.floor(totalItems / gridColCount);
+  const col = totalItems % gridColCount;
+
+  const xOffset =
+    col * (icon.size + icon.margin) +
+    (row % 2) * ((icon.size + icon.margin) / 2);
+  const yOffset = row * icon.size;
+
+  const screenOffsetX = useTransform(() => planeX.get() + xOffset + 20);
+  const screenOffsetY = useTransform(() => planeY.get() + yOffset + 20);
+  const x = useTransform(screenOffsetX, xRange, translateRange);
+  const y = useTransform(screenOffsetY, yRange, translateRange);
+  const xScale = useTransform(screenOffsetX, xRange, scaleRange);
+  const yScale = useTransform(screenOffsetY, yRange, scaleRange);
+  const scale = useTransform(() => Math.min(xScale.get(), yScale.get()));
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3, delay: totalItems * 0.03 }}
+      className="absolute flex justify-center items-center rounded-full bg-neutral-50 contain-strict overflow-hidden shadow-md hover:shadow-xl hover:scale-110 transition-all"
+      style={{
+        left: `${xOffset}px`,
+        top: `${yOffset}px`,
+        x,
+        y,
+        scale,
+        width: `${icon.size}px`,
+        height: `${icon.size}px`,
+        willChange: "transform",
+      }}
+    >
+      <TooltipProvider>
+        <Tooltip delayDuration={600}>
+          <TooltipTrigger asChild>
+            <Link
+              href="/register"
+              className="w-full h-full flex justify-center items-center cursor-pointer bg-gradient-to-br from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 transition-all"
+            >
+              <Plus className="size-12 text-white" strokeWidth={3} />
+            </Link>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Add New Member</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    </motion.div>
+  );
+}
 
 interface ItemProps {
   row: number;
@@ -210,11 +317,15 @@ interface ItemProps {
   scaleRange: number[];
   translateRange: number[];
   setSelectedTeamMember: (id: number) => void;
+  teamMembers: TeamMember[];
+  gridColCount: number;
 }
 
 /**
  * ==============   Settings   ================
  */
+
+const gridRowCount = 10;
 
 const icon = {
   margin: 80,
