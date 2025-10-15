@@ -138,7 +138,7 @@ export default function TeamMemberCard({
                   className="absolute bottom-2 right-2"
                 >
                   <Link
-                    href={`/team/${teamMember.id}`}
+                    href={`/${teamMember.id}`}
                     target="_blank"
                     className="px-4 py-2 rounded-full bg-card-foreground text-card text-xs group-hover:shadow-md transition-all"
                   >
