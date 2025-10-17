@@ -9,18 +9,19 @@
       "href": "/register"
     },
     {
-      "name": "Contact",
-      "href": "/contact"
-    }
-  ],
-  "footer": [
-    {
-      "name": "Home",
-      "href": "/"
+      "name": "Dashboard",
+      "href": "/dashboard"
     }
   ],
   "home": {
     "title": "Home",
     "description": "Home"
+  },
+  "pages": {
+    "back": "トップに戻る",
+    "previous": "前へ",
+    "next": "次へ",
+    "first": "最初",
+    "last": "最後"
   }
 }
