@@ -5,7 +5,8 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Loader } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Loader, Upload } from "lucide-react";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -13,6 +14,7 @@ export default function RegisterPage() {
   const [blob, setBlob] = useState<PutBlobResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -51,6 +53,14 @@ export default function RegisterPage() {
     }
 
     setError("");
+
+    // Create preview URL
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+  };
+
+  const handleAvatarClick = () => {
+    inputFileRef.current?.click();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -187,25 +197,60 @@ export default function RegisterPage() {
           <div data-grid className="col-span-2">
             <label
               htmlFor="avatar"
-              className="text-sm font-medium text-gray-700"
+              className="text-sm font-medium text-gray-700 mb-2 block"
             >
               Avatar Photo (Optional, max 4MB)
             </label>
-            <Input
-              id="avatar"
-              name="avatar"
-              type="file"
-              ref={inputFileRef}
-              accept="image/*"
-              onChange={handleFileChange}
-              className="cursor-pointer"
-            />
-            {blob && (
-              <div>
-                <p className="text-sm text-green-600">
-                  Avatar uploaded successfully!
-                </p>
+
+            <div className="flex items-center gap-4">
+              {previewUrl ? (
+                <Avatar
+                  className="size-20 cursor-pointer hover:opacity-80 transition-opacity border-2 border-gray-200"
+                  onClick={handleAvatarClick}
+                >
+                  <AvatarImage src={previewUrl} alt="Avatar preview" />
+                  <AvatarFallback>
+                    <Upload className="size-8 text-gray-400" />
+                  </AvatarFallback>
+                </Avatar>
+              ) : (
+                <div
+                  className="size-20 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-gray-400 transition-colors"
+                  onClick={handleAvatarClick}
+                >
+                  <Upload className="size-8 text-gray-400" />
+                </div>
+              )}
+
+              <div className="flex-1">
+                <Input
+                  id="avatar"
+                  name="avatar"
+                  type="file"
+                  ref={inputFileRef}
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleAvatarClick}
+                  className="w-full sm:w-auto"
+                >
+                  {previewUrl ? "Change Avatar" : "Upload Avatar"}
+                </Button>
+                {previewUrl && (
+                  <p className="text-sm text-green-600 mt-2">
+                    Avatar selected
+                  </p>
+                )}
               </div>
+            </div>
+            {blob && (
+              <p className="text-sm text-green-600 mt-2">
+                Avatar uploaded successfully!
+              </p>
             )}
           </div>
 
