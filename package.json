@@ -12,6 +12,9 @@
     "db:generate": "prisma generate"
   },
   "dependencies": {
+    "@ai-sdk/google": "^2.0.23",
+    "@ai-sdk/openai": "^2.0.52",
+    "@ai-sdk/react": "^2.0.75",
     "@nauverse/tailwind-dot-grid-backgrounds": "^1.2.13",
     "@neondatabase/serverless": "^1.0.2",
     "@prisma/client": "6.17.1",
@@ -24,6 +27,7 @@
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@vercel/blob": "^2.0.0",
+    "ai": "^5.0.75",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.544.0",
