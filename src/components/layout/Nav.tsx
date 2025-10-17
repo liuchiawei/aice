@@ -1,19 +1,39 @@
-import Link from "next/link"
-import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuLink } from "@/components/ui/navigation-menu"
-import content from "@/data/content.json"
+import Link from "next/link";
+import {
+  Sheet,
+  SheetTrigger,
+  SheetHeader,
+  SheetTitle,
+  SheetContent,
+} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { MenuIcon } from "lucide-react";
+import content from "@/data/content.json";
 
 export function Nav() {
   return (
-    <NavigationMenu>
-      <NavigationMenuList>
-        {content.nav.map((item) => (
-          <NavigationMenuItem key={item.name}>
-            <NavigationMenuLink asChild>
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="fixed top-4 right-4 z-50 cursor-pointer"
+        >
+          <MenuIcon className="size-4" />
+        </Button>
+      </SheetTrigger>
+      <SheetContent className="w-60 bg-background/70 backdrop-blur-xs">
+        <SheetHeader>
+          <SheetTitle>AICE2025</SheetTitle>
+        </SheetHeader>
+        <nav className="flex flex-col gap-2 p-4">
+          {content.nav.map((item) => (
+            <Button key={item.name} asChild>
               <Link href={item.href}>{item.name}</Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-        ))}
-      </NavigationMenuList>
-    </NavigationMenu>
-  )
+            </Button>
+          ))}
+        </nav>
+      </SheetContent>
+    </Sheet>
+  );
 }

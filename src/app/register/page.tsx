@@ -87,8 +87,8 @@ export default function RegisterPage() {
         setBlob({ url: data.data.image } as PutBlobResult);
       }
 
-      // Success - redirect to team page
-      router.push("/team");
+      // Success - redirect to top page
+      router.push("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed");
     } finally {
@@ -354,7 +354,7 @@ export default function RegisterPage() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => router.push("/team")}
+              onClick={() => router.push("/")}
               disabled={loading}
             >
               Cancel

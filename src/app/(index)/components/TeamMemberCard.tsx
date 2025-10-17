@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import Link from "next/link";
 import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type TeamMember = {
   id: number;
@@ -100,11 +101,16 @@ export default function TeamMemberCard({
                   translateZ={40}
                   className="aspect-square rounded-full overflow-hidden group-hover:shadow-xl transition-all duration-200 ease-linear w-full h-full"
                 >
-                  <img
-                    src={teamMember.image}
-                    alt={teamMember.furigana}
-                    className="w-full h-full object-cover"
-                  />
+                  <Avatar className="size-full">
+                    <AvatarImage
+                      src={teamMember.image}
+                      alt={teamMember.furigana}
+                      className="w-full h-full object-cover"
+                    />
+                    <AvatarFallback className="text-5xl">
+                      {teamMember.firstName.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
                 </CardItem>
               </motion.div>
               {/* Info Section */}
@@ -123,8 +129,10 @@ export default function TeamMemberCard({
                 <h3 className="w-full text-right text-xs">
                   {teamMember.age} 才
                 </h3>
-                <p className="text-justify group-hover:text-shadow-md transition-all">
-                  {teamMember.message}
+                <p className="text-justify group-hover:text-shadow-md transition-all truncate">
+                  {teamMember.message.length > 25
+                    ? `${teamMember.message.slice(0, 25)}...`
+                    : teamMember.message}
                 </p>
                 <CardItem
                   translateY={10}
@@ -132,8 +140,7 @@ export default function TeamMemberCard({
                   className="absolute bottom-2 right-2"
                 >
                   <Link
-                    href={`/team/${teamMember.id}`}
-                    target="_blank"
+                    href={`/${teamMember.id}`}
                     className="px-4 py-2 rounded-full bg-card-foreground text-card text-xs group-hover:shadow-md transition-all"
                   >
                     See More

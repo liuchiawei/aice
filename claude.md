@@ -40,9 +40,8 @@ pnpm dlx prisma db push          # Push schema changes without migrations
 ### Project Structure
 
 - **App Routes**: Uses Next.js App Router with TypeScript
-  - `/` - Landing page
-  - `/team` - Interactive team member grid (Apple Watch OS-inspired)
-  - `/team/[id]` - Individual team member detail pages
+  - `/(index)` - Landing page with Interactive team member grid (Apple Watch OS-inspired)
+  - `/[id]` - Individual team member detail pages
   - `/register` - Team member registration form with avatar upload
 
 - **Data Management**:
@@ -52,15 +51,24 @@ pnpm dlx prisma db push          # Push schema changes without migrations
   - Database seeding from `src/data/team-members.json` via `prisma/seed.ts`
 
 - **Component Organization**:
-  - `src/components/ui/` - shadcn/ui components
-  - `src/components/layout/` - Layout components (Nav, etc.)
-  - `src/app/team/components/` - Team-specific components (Hero, TeamMemberCard)
+  - `src/components/ui/` - shadcn/ui components (Sheet, Button, etc.)
+  - `src/components/layout/` - Layout components
+    - `Nav.tsx` - Mobile navigation menu using Sheet component with backdrop blur styling
+  - `src/app/(index)/components/` - Team-specific components (Hero, TeamMemberCard)
+  - `src/data/content.json` - Navigation links and site content
 
 - **Path Aliases**: Use `@/*` for `src/*` imports
 
 ### Key Features
 
-1. **Interactive Grid System** (`src/app/team/components/hero.tsx`):
+0. **Navigation Menu** (`src/components/layout/Nav.tsx`):
+   - Sheet-based sidebar navigation with hamburger menu icon
+   - Fixed positioning (top-4 right-4) with z-50
+   - Backdrop blur styling: `bg-background/70 backdrop-blur-xs`
+   - Navigation links loaded from `src/data/content.json`
+   - Width: 60 (w-60)
+
+1. **Interactive Grid System** (`src/app/(index)/components/hero.tsx`):
    - Draggable honeycomb-style grid using Motion/React
    - Dynamic viewport calculations with `useWindowSize` hook
    - Responsive grid columns (3-10) based on screen width
@@ -101,7 +109,7 @@ pnpm dlx prisma db push          # Push schema changes without migrations
 ### Development Notes
 
 - Team member data fetched from PostgreSQL database (not static JSON)
-- Server components used for data fetching in `/team` and `/team/[id]` pages
+- Server components used for data fetching in `/(index)` and `/(index)/[id]` pages
 - Hero grid is client-side with `useWindowSize` hook for responsive calculations
 - Registration form uses FormData for file uploads (not JSON)
 - Avatar upload is optional - can register without uploading image

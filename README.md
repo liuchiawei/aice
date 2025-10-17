@@ -95,7 +95,7 @@ pnpm dlx prisma db push          # マイグレーションなしでスキーマ
 ```
 src/
 ├── app/
-│   ├── team/
+│   ├── (index)/
 │   │   ├── components/
 │   │   │   ├── hero.tsx              # インタラクティブグリッド
 │   │   │   └── TeamMemberCard.tsx    # メンバーカード
@@ -109,10 +109,8 @@ src/
 ├── components/
 │   ├── ui/                           # shadcn/ui コンポーネント
 │   └── layout/                       # レイアウトコンポーネント
-├── data/
-│   └── team-members.json             # シード用データ
-└── generated/
-    └── prisma/                       # 生成された Prisma Client
+└── data/
+    └── team-members.json             # シード用データ
 
 prisma/
 ├── schema.prisma                     # データベーススキーマ
