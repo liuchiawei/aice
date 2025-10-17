@@ -6,6 +6,7 @@ const prisma = new PrismaClient();
 
 // GET single team member
 export async function GET(
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -143,6 +144,7 @@ export async function PATCH(
 
 // DELETE team member
 export async function DELETE(
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
