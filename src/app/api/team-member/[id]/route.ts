@@ -6,13 +6,13 @@ const prisma = new PrismaClient();
 
 // GET single team member
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const teamMember = await prisma.teamMember.findUnique({
       where: {
-        id: parseInt(params.id),
+        id: parseInt(id),
       },
     });
 
@@ -38,9 +38,10 @@ export async function GET(
 // PATCH update team member
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const formData = await request.formData();
 
     const firstName = formData.get("firstName") as string;
@@ -78,7 +79,7 @@ export async function PATCH(
     // Check if team member exists
     const existingMember = await prisma.teamMember.findUnique({
       where: {
-        id: parseInt(params.id),
+        id: parseInt(id),
       },
     });
 
@@ -110,7 +111,7 @@ export async function PATCH(
     // Update team member
     const teamMember = await prisma.teamMember.update({
       where: {
-        id: parseInt(params.id),
+        id: parseInt(id),
       },
       data: {
         firstName,
@@ -142,14 +143,14 @@ export async function PATCH(
 
 // DELETE team member
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     // Check if team member exists
     const existingMember = await prisma.teamMember.findUnique({
       where: {
-        id: parseInt(params.id),
+        id: parseInt(id),
       },
     });
 
@@ -163,7 +164,7 @@ export async function DELETE(
     // Delete team member
     await prisma.teamMember.delete({
       where: {
-        id: parseInt(params.id),
+        id: parseInt(id),
       },
     });
 
